@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ComponentFactoryResolver, ViewChild, ViewContainerRef } from '@angular/core';
+import { Container } from '@angular/compiler/src/i18n/i18n_ast';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'angular-ivy-lazy-hoc-talk';
+  @ViewChild('container', { read: ViewContainerRef }) container: ViewContainerRef;
+  constructor(private cfr: ComponentFactoryResolver) { }
+  loadFeature() {
+    import('./feature/feature/feature.component')
+      .then(({ FeatureComponent }) => {
+        this.container
+          .createComponent(this.cfr.resolveComponentFactory(FeatureComponent))
+      });
+  }
 }
